@@ -21,7 +21,7 @@ def index():
     if request.method=='POST':
         task_content=request.form['content']
         if len(task_content)==0:
-            return 'Cannot create empty task'
+            return render_template('empty_task.html')  
         else:
             new_task=ToDolist(content=task_content)
         try:
@@ -29,7 +29,7 @@ def index():
             db.session.commit()      #updating database   
             return redirect('/')     #getting back to start page
         except:
-            return "There was an issue adding your task"
+            return render_template('error.html')
     
     else:
         tasks=ToDolist.query.order_by(ToDolist.date_created).all()
@@ -44,7 +44,7 @@ def delete(id): #deleting task by it's unique id
         db.session.commit()
         return redirect('/')
     except:
-        return('Couldn\'t delete the task {}'.format(id))
+        return render_template('error.html')
 
 @app.route('/update/<int:id>',methods=['GET','POST'])
 def update(id):
@@ -55,7 +55,7 @@ def update(id):
             db.session.commit()
             return redirect('/')
         except:
-            return 'Couldn\'t update the task {}'.format(id)
+            return render_template('error.html')
     else:
         return render_template('update.html',task=task)
 
